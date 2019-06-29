@@ -2,7 +2,6 @@ from pathlib import Path
 
 
 class ImagePathAnnotationTemplate(object):
-
     def __init__(self, file_path):
         assert Path(file_path).exists(), f'{file_path} does not exits.'
         with open(file_path) as fp:

@@ -5,7 +5,8 @@ import numpy as np
 
 class TemplateTrainer(BaseTrain):
     def __init__(self, sess, model, data, config, logger):
-        super(TemplateTrainer, self).__init__(sess, model, data, config, logger)
+        super(TemplateTrainer, self).__init__(sess, model, data, config,
+                                              logger)
 
     def train_epoch(self):
         """

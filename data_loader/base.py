@@ -1,4 +1,4 @@
- import json
+import json
 from pathlib import Path
 from pprint import pprint
 
@@ -11,7 +11,6 @@ from utils.tools import AttrDict, load_json
 
 
 class Dataset(object):
-
     def __init__(self,
                  batch_size=2,
                  repeat_n=1,
