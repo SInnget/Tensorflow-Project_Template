@@ -27,6 +27,18 @@ class AttrDict(dict):
     __getattr__ = dict.__getitem__
 
 
+def file_reader(file_path):
+    """ generator for lines of text file
+    """
+    with open(file_path) as fp:
+        while True:
+            lines = fp.readline()
+            if lines:
+                yield lines
+            else:
+                break
+
+
 def load_json(json_path):
     with open(json_path, 'r') as fp:
         data = json.load(fp)
