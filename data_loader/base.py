@@ -1,16 +1,23 @@
-import json
+from abc import ABCMeta, abstractmethod
 from pathlib import Path
-from pprint import pprint
 
-import cv2 as cv
-import numpy as np
 import tensorflow as tf
-
-from utils.augments import Augments
-from utils.tools import AttrDict, load_json
+from utils.factory import Factory
 
 
-class Dataset(object):
+class DatasetFactory(Factory):
+    _registered_ = {}
+
+
+class DatasetMeta(ABCMeta):
+
+    def __init__(cls, name, bases, methods):
+        super(DatasetMeta, cls).__init__(name, bases, methods)
+        DatasetFactory.register(cls, suffix='Dataset')
+
+
+class _BaseDataset(object, metaclass=DatasetMeta):
+
     def __init__(self,
                  batch_size=2,
                  repeat_n=1,
@@ -59,14 +66,16 @@ class Dataset(object):
         raise NotImplementedError('_preprocess not implemented.')
 
     def get(self, is_training=True):
-        ds = tf.data.Dataset.from_tensor_slices((self.image_path, self.anno))
-        if self.shuffle:
-            ds = ds.shuffle(buffer_size=self.shuffle_size)
-        ds = ds.repeat(self.repeat_n)
-        ds = self._preprocess(ds, is_training)
-        ds = ds.batch(self.batch_size)
-        ds = ds.prefetch(None)
-        return ds
+        with tf.device('/cpu:0'):
+            ds = tf.data.Dataset.from_tensor_slices(
+                (self.image_path, self.anno))
+            if self.shuffle:
+                ds = ds.shuffle(buffer_size=self.shuffle_size)
+            ds = ds.repeat(self.repeat_n)
+            ds = self._preprocess(ds, is_training)
+            ds = ds.batch(self.batch_size)
+            ds = ds.prefetch(None)
+            return ds
 
     def resize(self, image):
         return tf.image.resize_images(
