@@ -1,8 +1,13 @@
 import argparse
 import json
+import re
 
 import commentjson
 from tensorflow.python.client import device_lib
+
+
+class InvalidClassNameError(Exception):
+    pass
 
 
 def get_args():
@@ -36,3 +41,22 @@ def load_commentjson(json_path):
 def get_available_gpus():
     local_device_protos = device_lib.list_local_devices()
     return [x.name for x in local_device_protos if x.device_type == 'GPU']
+
+
+def camel_to_snake(column_name):
+    """
+    converts a string that is camelCase into snake_case
+    Example:
+        print camel_to_snake("javaLovesCamelCase")
+        > java_loves_camel_case
+    See Also:
+        http://stackoverflow.com/questions/1175208/elegant-python-function-to-convert-camelcase-to-camel-case
+    """
+    num_underline = 0
+    if column_name.startswith('_'):
+        raw_l = len(column_name)
+        column_name = column_name.lstrip('_')
+        num_underline = raw_l - len(column_name)
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', column_name)
+    s1 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+    return f'{"_"* num_underline}{s1}'
