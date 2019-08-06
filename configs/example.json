@@ -5,5 +5,35 @@
   "learning_rate": 0.001,
   "batch_size": 16,
   "state_size": [784],
-  "max_to_keep":5
+  "max_to_keep": 5,
+    "dataset": {
+        "name": "key_point",
+        "train_file": ".../train.txt",
+        "test_file": ".../test.txt",
+        "resize_ratio": [
+            0.5,
+            0.5
+        ],
+        "img_mean": [
+            0,
+            0,
+            0
+        ],
+        "img_std": [
+            1.0,
+            1.0,
+            1.0
+        ],
+        "original_shape": [
+            800,
+            2880
+        ],
+        "shuffle": true,
+        "preprocess_workers": 20,
+        "do_aug": true, // do augmentation or not
+        "fast_mode": true, // option for simple/complicated color transform
+        "color_ordering": 0, // order of color transform, need to be checked which order produce the best result and need to avoid full blank results
+        "img_channel_n": 3,
+        "img_fmt": ".jpg"
+    }
 }
